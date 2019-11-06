@@ -14,6 +14,7 @@ import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,9 +42,11 @@ public class FaceDetector {
     public FaceDetector() {
         try {
             //初始化人脸检测器
-            faceCascade = new CascadeClassifier("F:\\opencv\\xml\\lbpcascade_frontalface_improved.xml");
+            faceCascade = new CascadeClassifier(new File(Training.class.getResource(
+                    "/detection/lbpcascade_frontalface_improved.xml").toURI()).getAbsolutePath());
             //初始化眼睛检测器
-            eyeCascade = new CascadeClassifier("F:\\opencv\\xml\\haarcascade_eye.xml");
+            eyeCascade = new CascadeClassifier(new File(Training.class.getResource(
+                    "/detection/haarcascade_eye.xml").toURI()).getAbsolutePath());
         } catch (Exception e) {
             logger.error("构建检测器失败!", e);
             throw new IllegalStateException("构建检测器失败!", e);

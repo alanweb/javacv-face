@@ -2,6 +2,7 @@ package com.alan.face.javacv;
 
 import org.bytedeco.javacpp.DoublePointer;
 import org.bytedeco.javacpp.IntPointer;
+import org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.opencv_imgcodecs;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.Frame;
@@ -21,41 +22,101 @@ import static org.bytedeco.javacpp.opencv_objdetect.CascadeClassifier;
 
 
 public class Training {
-
-    //读取opencv人脸检测器，参考我的路径改为自己的路径
-    static CascadeClassifier cascade = new CascadeClassifier(
-            "F:\\opencv\\xml\\haarcascade_frontalface_alt.xml");
+    //读取opencv人脸检测器
+    static CascadeClassifier cascade;
+    static {
+        try {
+            cascade = new CascadeClassifier(new File(Training.class.getResource(
+                    "/detection/haarcascade_frontalface_alt.xml").toURI()).getAbsolutePath());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) throws Exception, InterruptedException {
         //准备两个人的训练图片，每个人脸十张
         //需要注意，训练的图片必须是相同大小的灰度图
-        String baseDir = "C:\\";
+        String baseDir = "C:\\Users\\User\\Pictures\\Saved Pictures\\";
         //读取图片保存到mat
-        Mat y1 = opencv_imgcodecs.imread(baseDir + "face_01.jpg", 0);
+        Mat y1 = opencv_imgcodecs.imread(baseDir + "wb_1.jpg", 0);
+        Mat y2 = opencv_imgcodecs.imread(baseDir + "wb_2.jpg", 0);
+        Mat y3 = opencv_imgcodecs.imread(baseDir + "wb_3.jpg", 0);
+        Mat y4 = opencv_imgcodecs.imread(baseDir + "wb_4.jpg", 0);
+        Mat y5 = opencv_imgcodecs.imread(baseDir + "wb_5.jpg", 0);
+        Mat y6 = opencv_imgcodecs.imread(baseDir + "wb_6.jpg", 0);
+        Mat y7 = opencv_imgcodecs.imread(baseDir + "wb_7.jpg", 0);
+        Mat y8 = opencv_imgcodecs.imread(baseDir + "wb_8.jpg", 0);
+        Mat y9 = opencv_imgcodecs.imread(baseDir + "wb_9.jpg", 0);
+        Mat y10 = opencv_imgcodecs.imread(baseDir + "wb_10.jpg", 0);
 
+        Mat y11 = opencv_imgcodecs.imread(baseDir + "tx_51.jpg", 0);
+        Mat y12 = opencv_imgcodecs.imread(baseDir + "tx_52.jpg", 0);
+        Mat y13 = opencv_imgcodecs.imread(baseDir + "tx_53.jpg", 0);
+        Mat y14 = opencv_imgcodecs.imread(baseDir + "tx_54.jpg", 0);
+        Mat y15 = opencv_imgcodecs.imread(baseDir + "tx_55.jpg", 0);
+        Mat y16 = opencv_imgcodecs.imread(baseDir + "tx_56.jpg", 0);
+        Mat y17 = opencv_imgcodecs.imread(baseDir + "tx_57.jpg", 0);
+        Mat y18 = opencv_imgcodecs.imread(baseDir + "tx_58.jpg", 0);
+        Mat y19 = opencv_imgcodecs.imread(baseDir + "tx_59.jpg", 0);
+        Mat y20 = opencv_imgcodecs.imread(baseDir + "tx_60.jpg", 0);
 
-        MatVector images = new MatVector(4);//一共20个训练样本
-        Mat lables = new Mat(4, 1, CV_32SC1);//对应20个标签值
+        MatVector images = new MatVector(20);//一共20个训练样本
+        Mat lables = new Mat(20, 1, CV_32SC1);//对应20个标签值
         //写入标签值，前十个为1，后十个为2
         IntBuffer lablesBuf = lables.createBuffer();
         lablesBuf.put(0, 1);
-
+        lablesBuf.put(1, 1);
+        lablesBuf.put(2, 1);
+        lablesBuf.put(3, 1);
+        lablesBuf.put(4, 1);
+        lablesBuf.put(5, 1);
+        lablesBuf.put(6, 1);
+        lablesBuf.put(7, 1);
+        lablesBuf.put(8, 1);
+        lablesBuf.put(9, 1);
+		lablesBuf.put(10, 2);
+		lablesBuf.put(11, 2);
+		lablesBuf.put(12, 2);
+		lablesBuf.put(13, 2);
+		lablesBuf.put(14, 2);
+		lablesBuf.put(15, 2);
+		lablesBuf.put(16, 2);
+		lablesBuf.put(17, 2);
+		lablesBuf.put(18, 2);
+		lablesBuf.put(19, 2);
 
         //写入图片
         images.put(0, y1);
-
+        images.put(1, y2);
+        images.put(2, y3);
+        images.put(3, y4);
+        images.put(4, y5);
+        images.put(5, y6);
+        images.put(6, y7);
+        images.put(7, y8);
+        images.put(8, y9);
+        images.put(9, y10);
+        images.put(10, y11);
+        images.put(11, y12);
+        images.put(12, y13);
+        images.put(13, y14);
+        images.put(14, y15);
+        images.put(15, y16);
+        images.put(16, y17);
+        images.put(17, y18);
+        images.put(18, y19);
+        images.put(19, y20);
 
         //创建人脸分类器，有Fisher、Eigen、LBPH，选哪种自己决定，这里使用FisherFaceRecognizer
-        FaceRecognizer fr = createLBPHFaceRecognizer();
+        LBPHFaceRecognizer fr =  createLBPHFaceRecognizer();
         //训练
         fr.train(images, lables);
         //保存训练结果
-        fr.save("FisherRecognize.xml");
-
+        //fr.save("FisherRecognize.xml");
         //读取训练出的xml文件
-        fr.load("FisherRecognize.xml");
+       // fr .read( new FileNode().get("FisherRecognize.xml"));
         //设置阈值，阈值为0则任何人都不认识，阈值特别大的时候任何人都认识（返回和样本最相似的结果，永远不会返回-1）
         //前面忘记说了，检测返回-1代表不能和训练结果匹配
-        ((LBPHFaceRecognizer)fr).setThreshold(3000.0);
+       fr.setThreshold(3000.0);
 
         //*********************测试部分************************
 
@@ -107,6 +168,7 @@ public class Training {
 
             roi = new Mat(grayscr, face_i);
             resize(roi, face, new Size(300, 300));//我的训练样本是350*350，要对应的进行修改
+            opencv_imgcodecs.imwrite("c:\\111.jpg",face);
             fr.predict(face, label, confidence);
             int predictedLabel = label.get(0);//得到识别的标签值
 

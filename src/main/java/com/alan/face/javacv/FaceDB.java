@@ -24,6 +24,7 @@ import java.util.Map;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_face.createLBPHFaceRecognizer;
 import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
+import static org.bytedeco.javacpp.opencv_imgcodecs.imwrite;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 import static org.bytedeco.javacpp.opencv_imgproc.putText;
 import static org.bytedeco.javacpp.opencv_imgproc.resize;
@@ -34,18 +35,20 @@ import static org.bytedeco.javacpp.opencv_imgproc.resize;
 public class FaceDB {
 
     //人脸分类器
-    private static FaceRecognizer fr = createLBPHFaceRecognizer();
+    private static LBPHFaceRecognizer fr = createLBPHFaceRecognizer();
     //读取opencv人脸检测器
     static CascadeClassifier cascade;
+
     static {
         try {
             cascade = new CascadeClassifier(new File(Training.class.getResource(
                     "/detection/haarcascade_frontalface_alt.xml").toURI()).getAbsolutePath());
-            ((LBPHFaceRecognizer) fr).setThreshold(3000.0);
+            fr.setThreshold(3000.0);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
+
     private static void convert(Mat scr) {
         if (scr.empty())
             return;
@@ -132,7 +135,7 @@ public class FaceDB {
             while (result.next()) {
                 list.add(result.getString(1));
             }
-            return  list;
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -176,22 +179,7 @@ public class FaceDB {
         return null;
     }
 
-    public static void main(String[] args) throws FrameGrabber.Exception, InterruptedException {
-        Map<Long, List<String>> map = queryAllPic();
-        //写入标签值，前十个为1，后十个为2
-        map.entrySet().forEach(e->{
-            int size = e.getValue().size();
-            MatVector images =new MatVector(size);//一共训练size个样本
-            Mat lables=   new Mat(size, 1, CV_32SC1);//对应size个标签值
-            IntBuffer lablesBuf = lables.createBuffer();
-            int index = 0;
-            for(String pic : e.getValue()){
-                lablesBuf.put(index,   e.getKey().intValue());
-                images.put(index, imread(pic, 0));
-                index++;
-            }
-            fr.train(images, lables);
-        });
+    private static void camera() throws Exception {
         //开启摄像头，获取图像（得到的图像为frame类型，需要转换为mat类型进行检测和识别）
         OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);
         grabber.setImageWidth(640);
@@ -202,7 +190,7 @@ public class FaceDB {
         canvas.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         canvas.setAlwaysOnTop(true);
         Frame frame = null;
-        Mat scr =null;
+        Mat scr = null;
         while (true) {
             if (!canvas.isDisplayable()) {//窗口是否关闭
                 grabber.stop();//停止抓取
@@ -216,5 +204,27 @@ public class FaceDB {
             canvas.showImage(frame);//获取摄像头图像并放到窗口上显示，frame是一帧视频图像
             Thread.sleep(30);//30毫秒刷新一次图像
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Map<Long, List<String>> map = queryAllPic();
+        MatVector images = new MatVector(4);//一共训练size个样本
+        Mat lables = new Mat(4, 1, CV_32SC1);//对应size个标签值
+        IntBuffer lablesBuf = lables.createBuffer();
+        final int[] index = {0};
+        //写入标签值，前十个为1，后十个为2
+        map.entrySet().forEach(e -> {
+            for (String pic : e.getValue()) {
+                lablesBuf.put(index[0], e.getKey().intValue());
+                images.put(index[0], imread(pic, 0));
+                index[0]++;
+            }
+        });
+        System.out.println(index[0]);
+        fr.train(images, lables);
+//           camera();
+//        Mat mat = imread("C:\\Users\\User\\Desktop\\opencv\\1.jpeg");
+//        convert(mat);
+//        imwrite("c:\\111111.jpg",mat);
     }
 }

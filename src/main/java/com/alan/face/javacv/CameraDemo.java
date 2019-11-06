@@ -62,20 +62,20 @@ public class CameraDemo {
 
     public static void main(String[] args) throws Exception, InterruptedException {
 
-//        CameraDemo camera = new CameraDemo();
-//		camera.findFace();
-        Mat image = imread("F:\\opencv\\yc2.jpg") ;
-        AgeDetector ageDetector = new AgeDetector();
-        FaceDetector detector = new FaceDetector();
-        GenderDetector genderDetector = new GenderDetector();
-        Map<Rect, Mat> faces = detector.detect(image);
-        faces.entrySet().forEach(rectMatEntry -> {
-            imwrite("c:\\"+(Math.random()*1000)+".jpg",rectMatEntry.getValue());
-            String age = ageDetector.predictAge(rectMatEntry.getValue());
-            System.out.println(age);
-           GenderDetector.Gender gender =  genderDetector.predictGender(rectMatEntry.getValue());
-            System.out.println(gender.name());
-        });
+        CameraDemo camera = new CameraDemo();
+		camera.findFace();
+//        Mat image = imread("F:\\opencv\\yc2.jpg") ;
+//        AgeDetector ageDetector = new AgeDetector();
+//        FaceDetector detector = new FaceDetector();
+//        GenderDetector genderDetector = new GenderDetector();
+//        Map<Rect, Mat> faces = detector.detect(image);
+//        faces.entrySet().forEach(rectMatEntry -> {
+//            imwrite("c:\\"+(Math.random()*1000)+".jpg",rectMatEntry.getValue());
+//            String age = ageDetector.predictAge(rectMatEntry.getValue());
+//            System.out.println(age);
+//           GenderDetector.Gender gender =  genderDetector.predictGender(rectMatEntry.getValue());
+//            System.out.println(gender.name());
+//        });
     }
 
 }

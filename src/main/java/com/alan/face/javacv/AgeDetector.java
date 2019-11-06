@@ -1,6 +1,7 @@
 package com.alan.face.javacv;
 
 import org.bytedeco.javacpp.DoublePointer;
+import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Point;
 import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_core.Mat;
@@ -18,7 +19,7 @@ import static org.bytedeco.javacpp.opencv_core.minMaxLoc;
 import static org.bytedeco.javacpp.opencv_core.normalize;
 import static org.bytedeco.javacpp.opencv_dnn.*;
 import static org.bytedeco.javacpp.opencv_dnn.createCaffeImporter;
-import static org.bytedeco.javacpp.opencv_imgproc.resize;
+import static org.bytedeco.javacpp.opencv_imgproc.*;
 
 /**
  *使用卷积神经网络的年龄预测器
@@ -54,6 +55,7 @@ public class AgeDetector {
             Blob inputBlob = new Blob(resizedMat);
             //设置入口参数
             ageNet.setBlob(".data", inputBlob);
+
             //探测
             ageNet.forward();
             //获取输出数据

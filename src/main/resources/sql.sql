@@ -1,7 +1,7 @@
 CREATE TABLE t_user (
 `user_id`  bigint(20) NOT NULL AUTO_INCREMENT ,
 `name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-PRIMARY KEY (`id`)
+PRIMARY KEY (`user_id`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
