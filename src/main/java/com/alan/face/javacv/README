@@ -4,3 +4,6 @@ FaceDB 读取数据库数据进行人脸识别
     使用的是mysql数据库 可以使用提供的sql 脚本构建 并修改jdbc.properties相关参数
 
 ps : 识别效果不是很理想
+
+https://blog.csdn.net/hpyMiss/article/details/80759500
+https://github.com/ageitgey/face_recognition/blob/master/README_Simplified_Chinese.md
