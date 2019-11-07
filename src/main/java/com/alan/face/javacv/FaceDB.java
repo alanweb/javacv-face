@@ -48,7 +48,7 @@ public class FaceDB {
             e.printStackTrace();
         }
     }
-
+    static AgeDetector ageDetector = new AgeDetector();
     private static void convert(Mat scr) {
         if (scr.empty())
             return;
@@ -69,7 +69,10 @@ public class FaceDB {
             rectangle(scr, face_i, new opencv_core.Scalar(0, 255, 0, 1));
 
             roi = new opencv_core.Mat(grayscr, face_i);
-            resize(roi, face, new opencv_core.Size(300, 300));//我的训练样本是350*350，要对应的进行修改
+            //我的训练样本是350*350，要对应的进行修改
+            resize(roi, face, new opencv_core.Size(300, 300));
+            String age = ageDetector.predictAge(face);
+            System.out.println(age);
             fr.predict(face, label, confidence);
             int predictedLabel = label.get(0);//得到识别的标签值
 
@@ -220,9 +223,8 @@ public class FaceDB {
                 index[0]++;
             }
         });
-        System.out.println(index[0]);
         fr.train(images, lables);
-//           camera();
+        camera();
 //        Mat mat = imread("C:\\Users\\User\\Desktop\\opencv\\1.jpeg");
 //        convert(mat);
 //        imwrite("c:\\111111.jpg",mat);

@@ -1,0 +1,6 @@
+TestLoad 提供基本方法
+Training 完整训练到识别人脸
+FaceDB 读取数据库数据进行人脸识别
+    使用的是mysql数据库 可以使用提供的sql 脚本构建 并修改jdbc.properties相关参数
+
+ps : 识别效果不是很理想

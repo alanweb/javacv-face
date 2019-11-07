@@ -1,0 +1,7 @@
+AgeRecognizer
+GengerRecognizer
+#运行需要设置 vm options 指定opencv_java412.dll文件的目录 java.library.path
+-Djava.library.path=C:\home\vn04wcu\javacv-face\src\main\resources
+idea 工具配置 vm options 步骤：
+Run -> Edit Configurations -> Application -> 选取/创建(执行默认会创建名称ClassName的) -> 右侧configuration局域栏的 vm options
+

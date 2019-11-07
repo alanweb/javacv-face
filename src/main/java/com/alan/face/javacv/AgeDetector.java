@@ -1,25 +1,19 @@
 package com.alan.face.javacv;
 
 import org.bytedeco.javacpp.DoublePointer;
-import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacpp.opencv_core.Point;
-import org.bytedeco.javacpp.opencv_core.Size;
-import org.bytedeco.javacpp.opencv_core.Mat;
+import org.bytedeco.javacpp.opencv_core.*;
 import org.bytedeco.javacpp.opencv_dnn.Importer;
 import org.bytedeco.javacpp.opencv_dnn.Net;
-import org.bytedeco.javacv.Frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URISyntaxException;
 
-import static org.bytedeco.javacpp.opencv_core.NORM_MINMAX;
-import static org.bytedeco.javacpp.opencv_core.minMaxLoc;
-import static org.bytedeco.javacpp.opencv_core.normalize;
-import static org.bytedeco.javacpp.opencv_dnn.*;
+import static org.bytedeco.javacpp.opencv_core.*;
+import static org.bytedeco.javacpp.opencv_dnn.Blob;
 import static org.bytedeco.javacpp.opencv_dnn.createCaffeImporter;
-import static org.bytedeco.javacpp.opencv_imgproc.*;
+import static org.bytedeco.javacpp.opencv_imgproc.resize;
 
 /**
  *使用卷积神经网络的年龄预测器
@@ -55,7 +49,6 @@ public class AgeDetector {
             Blob inputBlob = new Blob(resizedMat);
             //设置入口参数
             ageNet.setBlob(".data", inputBlob);
-
             //探测
             ageNet.forward();
             //获取输出数据
